@@ -19,11 +19,6 @@ const getMigrationFiles = (migrationFolderPath: string): Promise<INormalizedMigr
                 }
             });
         })
-        .then((normalizedMigrations) => {
-            console.log("Migrations files: ", normalizedMigrations);
-            return normalizedMigrations
-        });
-
 };
 
 const typeOrmAdapter: IOrmAdapter = {

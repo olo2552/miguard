@@ -28,10 +28,6 @@ const getCurrentMigrations = (clientConfig: IPostgresConfig): Promise<INormalize
                 }
             })
         })
-        .then((migrationRows) => {
-            console.log("Database migration rows: ", migrationRows);
-            return migrationRows
-        })
 };
 
 const postgresAdapter: IDbAdapter = {
