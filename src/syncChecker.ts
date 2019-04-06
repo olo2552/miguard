@@ -25,8 +25,8 @@ const isInSync = (dbAdapter: IDbAdapter, ormAdapter: IOrmAdapter) =>
         const ormFilesMigrations = await ormAdapter.getMigrationFiles(migrationFilesPath);
         const dbRowsMigrations = await dbAdapter.getCurrentMigrations(clientConfig);
 
-        const notInFiles = _.differenceWith(ormFilesMigrations, dbRowsMigrations, _.isEqual);
-        const notInDb = _.differenceWith(dbRowsMigrations, ormFilesMigrations, _.isEqual);
+        const notInDb = _.differenceWith(ormFilesMigrations, dbRowsMigrations, _.isEqual);
+        const notInFiles = _.differenceWith(dbRowsMigrations, ormFilesMigrations, _.isEqual);
 
         if (!notInDb || !notInFiles) {
             return {
