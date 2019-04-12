@@ -14,7 +14,7 @@ interface IMigrationsDifference {
     notInDb: INormalizedMigration[];
 }
 
-interface IIsInSyncResponse {
+export interface IIsInSyncResponse {
     inSync: boolean;
     message: InSyncMessage;
     divergedEntities?: IMigrationsDifference
@@ -22,13 +22,18 @@ interface IIsInSyncResponse {
 
 const isInSync = (dbAdapter: IDbAdapter, ormAdapter: IOrmAdapter) =>
     async (migrationFilesPath: string, clientConfig: IPostgresConfig): Promise<IIsInSyncResponse> => {
-        const ormFilesMigrations = await ormAdapter.getMigrationFiles(migrationFilesPath);
         const dbRowsMigrations = await dbAdapter.getCurrentMigrations(clientConfig);
+
+        if (!dbRowsMigrations) {
+            return
+        }
+
+        const ormFilesMigrations = await ormAdapter.getMigrationFiles(migrationFilesPath);
 
         const notInDb = _.differenceWith(ormFilesMigrations, dbRowsMigrations, _.isEqual);
         const notInFiles = _.differenceWith(dbRowsMigrations, ormFilesMigrations, _.isEqual);
 
-        if (!notInDb || !notInFiles) {
+        if (_.isEmpty(notInDb) && _.isEmpty(notInFiles)) {
             return {
                 inSync: true,
                 message: InSyncMessage.IN_SYNC_MESSAGE,

@@ -4,8 +4,17 @@ import {INormalizedMigration} from "../interfaces/normalizedMigration";
 import {IDbAdapter, IPostgresConfig} from "./dbAdapter.interfaces";
 
 
-const getCurrentMigrations = (clientConfig: IPostgresConfig): Promise<INormalizedMigration[]> => {
-    const postgresClient = new Client(clientConfig);
+const getCurrentMigrations = (clientConfig: IPostgresConfig): Promise<INormalizedMigration[] | void> => {
+    const {port, user, password, host, dbName, engine} = clientConfig;
+
+    const postgresClient = new Client({
+        database: dbName,
+        password,
+        port,
+        user,
+        host,
+        keepAlive: false,
+    });
 
     return postgresClient.connect()
         .then(() => {
@@ -27,6 +36,10 @@ const getCurrentMigrations = (clientConfig: IPostgresConfig): Promise<INormalize
                     name: nameWithoutTimestamp
                 }
             })
+        })
+        .catch((error) => {
+            console.error("Connection attempt to database failed. Error: ", error);
+            process.exit(1);
         })
 };
 

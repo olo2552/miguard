@@ -6,5 +6,5 @@ export interface IPostgresConfig extends IDatabase {
 }
 
 export interface IDbAdapter {
-    getCurrentMigrations: (clientConfig: IPostgresConfig) => Promise<INormalizedMigration[]>;
+    getCurrentMigrations: (clientConfig: IPostgresConfig) => Promise<INormalizedMigration[] | void>;
 }

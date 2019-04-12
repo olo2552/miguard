@@ -1,29 +1,37 @@
 import {inspect} from "util";
-import {IPostgresConfig} from "./DbAdapters/dbAdapter.interfaces";
-import {isInSync} from "./syncChecker";
-import postgresAdapter from "./DbAdapters/Postgres.adapter";
-import typeOrmAdapter from "./OrmAdapters/TypeORM";
-import {watchFilesChanges} from "./fileWatcher";
+import * as _ from "lodash"
 
-const CLIENT_CONFIG: IPostgresConfig = {
-    database: "montr_app",
-    host: "0.0.0.0",
-    port: 5433,
-    user: "web",
-    password: "web",
+import {IIsInSyncResponse, isInSync} from "./syncChecker/syncChecker";
+import {watchFilesChanges} from "./fileWatcher/fileWatcher";
+import {getConfig} from "./configParsing/getConfig";
+import {dbEngineToAdapter} from "./dbAdapters/dbEngineToAdapter.dictionary";
+import {ormNameToOrm} from "./ormAdapters/ormNameToOrm.dictionary";
+
+const app = async () => {
+    console.log("app start");
+
+    const config = await getConfig("/Users/mundane/repos/miguard/.miguardrc.json");
+    console.log("Cofiguration file found:", config);
+
+    const databaseAdapter = dbEngineToAdapter[config.database.engine];
+    const ormAdapter = ormNameToOrm[config.orm];
+    const isInSyncWithAdapters = isInSync(databaseAdapter, ormAdapter);
+    const inInSyncForCurrentConfig: () => Promise<IIsInSyncResponse> = _.bind(isInSyncWithAdapters, null, config.migrationsFolderPath, config.database);
+
+    inInSyncForCurrentConfig()
+        .then((inSync) => {
+            console.log(inspect(inSync, false, null, true));
+        })
+        .catch(console.log);
+
+    watchFilesChanges(config.migrationsFolderPath)
+        .on('all', (event, path) => {
+            inInSyncForCurrentConfig()
+                .then((inSync) => {
+                    console.log(inspect(inSync, false, null, true));
+                })
+                .catch(console.log);
+        });
 };
 
-const DB_MIGRATIONS_FOLDER = "/Users/mundane/repos/montr-app/backend/src/database/migration";
-
-watchFilesChanges(DB_MIGRATIONS_FOLDER)
-    .on('all', (event, path) => {
-        console.log({event, path});
-
-        isInSync(postgresAdapter, typeOrmAdapter)(DB_MIGRATIONS_FOLDER, CLIENT_CONFIG)
-            .then((inSync) => {
-                console.log(inspect(inSync, false, null, true));
-
-                return inSync
-            });
-    });
-
+app();
