@@ -64,4 +64,5 @@ typings/
 .idea
 
 # Miguardrc :)
-.miguardrc*
+.miguardrc
+.miguardrc.json
