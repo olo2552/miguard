@@ -1,8 +1,8 @@
 import * as _ from "lodash"
 
-import {IDbAdapter, IPostgresConfig} from "./DbAdapters/dbAdapter.interfaces";
-import {IOrmAdapter} from "./OrmAdapters/ormAdapter.interfaces";
-import {INormalizedMigration} from "./interfaces/normalizedMigration";
+import {IDbAdapter, IPostgresConfig} from "../dbAdapters/dbAdapter.interfaces";
+import {IOrmAdapter} from "../ormAdapters/ormAdapter.interfaces";
+import {INormalizedMigration} from "../interfaces/normalizedMigration";
 
 const enum InSyncMessage {
     IN_SYNC_MESSAGE = "Database is fully synced in",
