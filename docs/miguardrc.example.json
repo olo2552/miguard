@@ -1,0 +1,10 @@
+{
+  "database": {
+    "dbName": "ExampleDatabase",
+    "host": "0.0.0.0",
+    "port": 1234,
+    "user": "John",
+    "password": "HelloWorld!"
+  },
+  "migrationsFolderPath": "/Users/John/migrations-folder"
+}
