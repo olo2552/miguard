@@ -1,0 +1,12 @@
+{
+  "migrationsFolderPath": "/Users/mundane/repos/montr-app/backend/src/database/migration",
+  "database": {
+    "engine": "PostgreSQL",
+    "dbName": "montr_app",
+    "host": "0.0.0.0",
+    "port": 5433,
+    "user": "web",
+    "password": "web"
+  },
+  "orm": "TypeORM"
+}
