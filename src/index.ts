@@ -1,5 +1,6 @@
 import {inspect} from "util";
 import * as _ from "lodash"
+import * as notifier from "node-notifier";
 
 import {IIsInSyncResponse, isInSync} from "./syncChecker/syncChecker";
 import {watchFilesChanges} from "./fileWatcher/fileWatcher";
@@ -10,7 +11,7 @@ import {ormNameToOrm} from "./ormAdapters/ormNameToOrm.dictionary";
 const app = async () => {
     console.log("app start");
 
-    const config = await getConfig("/Users/mundane/repos/miguard/.miguardrc.json");
+    const config = await getConfig("/Users/mundane/repos/miguard/.miguardrc");
     console.log("Cofiguration file found:", config);
 
     const databaseAdapter = dbEngineToAdapter[config.database.engine];
